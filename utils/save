@@ -1,0 +1,61 @@
+import numpy as np
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import time
+from PIL import Image
+import matplotlib.pyplot as plt
+import torch.autograd as autograd
+import os
+
+# Saves array and graph of trial solution
+def save_trial_sol(save_sol_in, net, x):
+    trial_sol = graph_trial_sol(net, x)
+    plt.savefig('%s/solution.png' %save_sol_in)
+    plt.clf()
+    trial_sol_file = 'trial_solution.txt'
+    np.savetxt("%s/%s" %(save_sol_in, trial_sol_file), trial_sol, fmt="%s")
+# Graphs the losses, saves the graph, losses and tics
+def save_loss_and_tics(save_loss_in, losses, tics):
+    plt.clf()
+    plt.plot(losses)
+    plt.savefig('%s/losses_graph.png' %save_loss_in)
+    plt.clf()
+    losses_file = 'loss.txt'
+    tics_file = 'tics.txt'
+    np.savetxt("%s/%s" %(save_loss_in, losses_file), losses.numpy(), fmt="%s")
+    np.savetxt("%s/%s" %(save_loss_in, tics_file),tics.numpy(), fmt="%s")
+# Make the folders to save model, graphs, losses and tics
+def try_make_folders(EXP):
+    path = './Experiments/ANN'
+    try:
+        os.mkdir(path)
+    except OSError:
+        pass
+    for exp in EXP:
+        path = '%s/%s' %(path, exp)
+        try:
+            os.mkdir(path)
+        except OSError:
+            pass
+    save_model_in = "%s/Models" % path
+    save_loss_in = "%s/Loss" % path
+    save_sol_in = "%s/TrialSolution" % path
+    try:
+        os.mkdir(save_model_in)
+        os.mkdir(save_loss_in)
+        os.mkdir(save_sol_in)
+    except OSError:
+        print("Creation of %s, %s, %s failed" %
+              (save_model_in, save_loss_in, save_sol_in))
+    return save_model_in, save_loss_in, save_sol_in
+# Save experiment by calling required functions
+def save_experiment(net, x, losses, tics, EXP):
+    # Try to make the folders to save experiments
+    save_model_in, save_loss_in, save_sol_in = try_make_folders(EXP)
+    # Save fully trained net
+    torch.save(net.state_dict(), "%s/model.pth" % save_model_in)
+    # Save and graph trial solution
+    save_trial_sol(save_sol_in, net, x)
+    # Save losses and tics
+    save_loss_and_tics(save_loss_in, losses, tics)
