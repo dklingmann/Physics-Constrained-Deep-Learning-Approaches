@@ -1,0 +1,7 @@
+PyTorch implementation for Artificial Neural Networks for Solving Ordinary and Partial Differential Equations. This is
+done by defining a trial solution as a sum of two functions. One which satisfies the boundary conditions or the conditions
+imposed to ensure uniqueness of a solution. The second part is constructed so as not to contribute to these
+conditions and includes the output of a neural network. As such, the problem is formulated in an unconstrained way
+the network is trained to minimise the variational or residual loss defined by the governing equations.
+
+In this file, the approach is compared to the Galerkin finite element method (AND PERHAPS OTHERS).
